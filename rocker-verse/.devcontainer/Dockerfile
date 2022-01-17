@@ -1,5 +1,6 @@
 # R version: 4, 4.1, 4.0
 ARG VARIANT="4"
+ARG USER="rstudio"
 FROM rocker/verse:${VARIANT}
 
 # Use the [Option] comment to specify true/false arguments that should appear in VS Code UX
@@ -10,12 +11,12 @@ ARG INSTALL_ZSH="true"
 ARG UPGRADE_PACKAGES="false"
 
 # Install needed packages and setup non-root user. Use a separate RUN statement to add your own dependencies.
-ARG USERNAME=vscode
-ARG USER_UID=2000
-ARG USER_GID=$USER_UID
+ARG USERNAME="rstudio"
+ARG USER_UID=1000
+ARG USER_GID=1000
 COPY library-scripts/*.sh /tmp/library-scripts/
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && /bin/bash /tmp/library-scripts/common-debian.sh "${INSTALL_ZSH}" "${USERNAME}" "${USER_UID}" "${USER_GID}" "${UPGRADE_PACKAGES}" "true" "true" \
+    && /bin/bash /tmp/library-scripts/common-debian.sh "${INSTALL_ZSH}" "automatic" "automatic" "automatic" "${UPGRADE_PACKAGES}" "true" "true" \
     && usermod -a -G staff ${USERNAME} \
     && apt-get -y install \
         python3-pip \
